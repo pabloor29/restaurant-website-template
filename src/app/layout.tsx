@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const [{ data: restaurant }, { data: hoursData }] = await Promise.all([
-    supabase.from('restaurants').select('id, name, phone, address, reservation_mode').eq('id', RESTAURANT_ID).single(),
+    supabase.from('restaurants').select('id, name, email, phone, address, reservation_mode').eq('id', RESTAURANT_ID).single(),
     supabase.from('opening_hours').select('hours').eq('restaurant_id', RESTAURANT_ID).single(),
   ])
 

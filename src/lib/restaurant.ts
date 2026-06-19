@@ -1,9 +1,10 @@
-export const RESTAURANT_ID = process.env.NEXT_PUBLIC_RESTAURANT_ID!
+export const RESTAURANT_ID = (process.env.NEXT_PUBLIC_RESTAURANT_ID ?? process.env.RESTAURANT_ID)!
 
 // Types miroir des tables Supabase du restaurant-admin
 export type Restaurant = {
   id: string
   name: string
+  email: string | null
   phone: string | null
   address: string | null
   reservation_mode: 'simple' | 'advanced'
@@ -40,4 +41,9 @@ export type ReservationSchedule = {
   soir_debut: string | null
   soir_fin: string | null
   interval_minutes: number
+}
+
+export type HolidayPeriod = {
+  debut: string
+  fin: string
 }

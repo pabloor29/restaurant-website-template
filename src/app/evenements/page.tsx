@@ -11,26 +11,13 @@ export default async function EvenementsPage() {
   const today = new Date().toISOString().split('T')[0]
 
   const [{ data: upcoming }, { data: past }] = await Promise.all([
-    supabase
-      .from('restaurant_events')
-      .select('id, event_date, position')
-      .eq('restaurant_id', RESTAURANT_ID)
-      .gte('event_date', today)
-      .order('event_date', { ascending: true }),
-    supabase
-      .from('restaurant_events')
-      .select('id, event_date, position')
-      .eq('restaurant_id', RESTAURANT_ID)
-      .lt('event_date', today)
-      .order('event_date', { ascending: false })
-      .limit(6),
+    supabase.from('restaurant_events').select('id, event_date, position').eq('restaurant_id', RESTAURANT_ID).gte('event_date', today).order('event_date', { ascending: true }),
+    supabase.from('restaurant_events').select('id, event_date, position').eq('restaurant_id', RESTAURANT_ID).lt('event_date', today).order('event_date', { ascending: false }).limit(6),
   ])
 
   const allEvents = [...(upcoming ?? []), ...(past ?? [])]
-  const allIds = allEvents.map(e => e.id)
-
-  const { data: files } = allIds.length
-    ? await supabase.from('event_files').select('id, file_path, event_id, position').in('event_id', allIds).order('position')
+  const { data: files } = allEvents.length
+    ? await supabase.from('event_files').select('id, file_path, event_id, position').in('event_id', allEvents.map(e => e.id)).order('position')
     : { data: [] }
 
   const grouped: Record<string, { id: string; file_path: string }[]> = {}
@@ -60,7 +47,7 @@ export default async function EvenementsPage() {
         }}>
           {title}
         </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           {events.map(evt => {
             const evtFiles = grouped[evt.id] ?? []
             return (
@@ -69,9 +56,7 @@ export default async function EvenementsPage() {
                 borderRadius: 16, overflow: 'hidden',
               }}>
                 <div style={{ padding: '18px 22px', borderBottom: evtFiles.length > 0 ? '1px solid var(--border-soft)' : 'none' }}>
-                  <p className="font-secondary capitalize" style={{
-                    fontSize: '1rem', fontWeight: 600, color: 'var(--ink)',
-                  }}>
+                  <p className="font-secondary capitalize" style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--ink)' }}>
                     {fmtDate(evt.event_date)}
                   </p>
                 </div>
@@ -79,28 +64,29 @@ export default async function EvenementsPage() {
                 {evtFiles.length > 0 && (
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                    gap: 12, padding: 16,
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                    gap: 16,
+                    padding: 16,
                   }}>
                     {evtFiles.map((f, i) => {
                       const url = getPublicUrl(f.file_path)
                       return (
-                        <a key={f.id} href={url} target="_blank" rel="noreferrer" style={{ display: 'block', textDecoration: 'none' }}>
-                          <div style={{
-                            borderRadius: 10, overflow: 'hidden',
-                            border: '1px solid var(--border-soft)',
-                            aspectRatio: '3 / 4', position: 'relative',
-                            background: 'var(--surface-alt)',
-                          }}>
-                            <Image
-                              src={url}
-                              alt={`Événement ${fmtDate(evt.event_date)} — image ${i + 1}`}
-                              fill
-                              sizes="(max-width: 768px) 100vw, 25vw"
-                              style={{ objectFit: 'cover' }}
-                            />
-                          </div>
-                        </a>
+                        <div key={f.id} style={{
+                          borderRadius: 10, overflow: 'hidden',
+                          border: '1px solid var(--border-soft)',
+                          position: 'relative',
+                          aspectRatio: '800 / 1130',
+                          background: 'var(--surface-alt)',
+                          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                        }}>
+                          <Image
+                            src={url}
+                            alt={`Événement ${fmtDate(evt.event_date)} — affiche ${i + 1}`}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
                       )
                     })}
                   </div>
@@ -134,7 +120,7 @@ export default async function EvenementsPage() {
       ) : (
         <>
           <EventSection events={upcoming} title="À venir" />
-          <EventSection events={past} title="Événements passés" />
+          <EventSection events={past}     title="Événements passés" />
         </>
       )}
     </div>

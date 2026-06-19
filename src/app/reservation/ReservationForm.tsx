@@ -1,14 +1,18 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import type { ReservationSchedule, OpeningHourDay } from '@/lib/restaurant'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import { fr } from 'date-fns/locale'
+import type { ReservationSchedule, OpeningHourDay, HolidayPeriod } from '@/lib/restaurant'
+
+registerLocale('fr', fr)
 
 type Props = {
   restaurantId: string
   schedule: ReservationSchedule | null
   closedDays: string[]
   openingHours: OpeningHourDay[] | null
+  holidayPeriods: HolidayPeriod[]
 }
 
 const inputStyle: React.CSSProperties = {
@@ -24,7 +28,15 @@ const inputStyle: React.CSSProperties = {
   transition: 'border-color 0.15s',
 }
 
-function generateSlots(schedule: ReservationSchedule | null, dayOfWeek: number, openingHours: OpeningHourDay[] | null): string[] {
+function toISO(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function generateSlots(
+  schedule: ReservationSchedule | null,
+  dayOfWeek: number,
+  openingHours: OpeningHourDay[] | null,
+): string[] {
   if (!schedule) return []
   const slots: string[] = []
   const interval = schedule.interval_minutes ?? 30
@@ -46,25 +58,21 @@ function generateSlots(schedule: ReservationSchedule | null, dayOfWeek: number, 
     }
   }
 
-  const lunchClosed = dayHours?.closedLunch ?? false
-  const dinerClosed = dayHours?.closedDiner ?? false
-
-  addSlots(schedule.midi_active ?? false, schedule.midi_debut, schedule.midi_fin, !lunchClosed)
-  addSlots(schedule.soir_active ?? false, schedule.soir_debut, schedule.soir_fin, !dinerClosed)
+  addSlots(schedule.midi_active ?? false, schedule.midi_debut, schedule.midi_fin, !dayHours?.closedLunch)
+  addSlots(schedule.soir_active ?? false, schedule.soir_debut, schedule.soir_fin, !dayHours?.closedDiner)
 
   return slots
 }
 
-function toISO(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
+export function ReservationForm({ restaurantId, schedule, closedDays, openingHours, holidayPeriods }: Props) {
+  const today = useMemo(() => {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return d
+  }, [])
+  const todayISO = toISO(today)
 
-export function ReservationForm({ restaurantId, schedule, closedDays, openingHours }: Props) {
-  const supabase = createClient()
-
-  const today = toISO(new Date())
-
-  const [date, setDate] = useState('')
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [timeSlot, setTimeSlot] = useState('')
   const [covers, setCovers] = useState('2')
   const [name, setName] = useState('')
@@ -75,23 +83,29 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  const isDateDisabled = (dateStr: string): boolean => {
-    if (dateStr < today) return true
-    if (closedDays.includes(dateStr)) return true
-    const d = new Date(dateStr + 'T00:00:00')
-    const dayIdx = d.getDay() === 0 ? 6 : d.getDay() - 1
-    const dayHours = openingHours?.[dayIdx]
-    if (dayHours?.closedDay) return true
+  const isDateClosed = (date: Date): boolean => {
+    const iso = toISO(date)
+    if (closedDays.includes(iso)) return true
+    const idx = date.getDay() === 0 ? 6 : date.getDay() - 1
+    if (openingHours?.[idx]?.closedDay) return true
+    for (const period of holidayPeriods) {
+      if (iso >= period.debut && iso <= period.fin) return true
+    }
     return false
   }
 
+  const getDayClassName = (date: Date): string => {
+    const iso = toISO(date)
+    if (iso < todayISO) return 'res-day-past'
+    if (isDateClosed(date)) return 'res-day-closed'
+    return ''
+  }
+
   const slots = useMemo(() => {
-    if (!date) return []
-    if (isDateDisabled(date)) return []
-    const d = new Date(date + 'T00:00:00')
-    return generateSlots(schedule, d.getDay(), openingHours)
+    if (!selectedDate || isDateClosed(selectedDate)) return []
+    return generateSlots(schedule, selectedDate.getDay(), openingHours)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date, schedule, openingHours, closedDays])
+  }, [selectedDate, schedule, openingHours, closedDays])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -99,32 +113,40 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
     setStatus('idle')
     setErrorMsg('')
 
-    if (isDateDisabled(date)) {
+    if (!selectedDate || isDateClosed(selectedDate)) {
       setErrorMsg('Ce jour n\'est pas disponible pour les réservations.')
       setLoading(false)
       setStatus('error')
       return
     }
 
-    const { error } = await supabase.from('reservations').insert({
-      restaurant_id: restaurantId,
-      date,
-      time_slot: timeSlot,
-      covers: Number(covers),
-      name: name.trim(),
-      email: email.trim() || null,
-      phone: phone.trim() || null,
-      notes: notes.trim() || null,
-      status: 'pending',
-    })
+    try {
+      const res = await fetch('/api/reservation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim() || null,
+          phone: phone.trim() || null,
+          covers: Number(covers),
+          date: toISO(selectedDate),
+          time_slot: timeSlot,
+          notes: notes.trim() || null,
+        }),
+      })
 
-    if (error) {
-      setErrorMsg(error.message)
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        setErrorMsg(body.error ?? 'Une erreur est survenue.')
+        setStatus('error')
+      } else {
+        setStatus('success')
+        setSelectedDate(null); setTimeSlot(''); setCovers('2'); setName('')
+        setEmail(''); setPhone(''); setNotes('')
+      }
+    } catch {
+      setErrorMsg('Erreur réseau. Veuillez réessayer.')
       setStatus('error')
-    } else {
-      setStatus('success')
-      setDate(''); setTimeSlot(''); setCovers('2'); setName('')
-      setEmail(''); setPhone(''); setNotes('')
     }
 
     setLoading(false)
@@ -176,16 +198,18 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
             <label className="font-secondary" style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', letterSpacing: '0.08em' }}>
               DATE *
             </label>
-            <input
-              type="date"
-              value={date}
-              min={today}
-              required
-              onChange={e => { setDate(e.target.value); setTimeSlot('') }}
-              className="font-secondary"
-              style={inputStyle}
-              onFocus={e => { e.target.style.borderColor = 'var(--pine)' }}
-              onBlur={e => { e.target.style.borderColor = 'var(--border)' }}
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date: Date | null) => { setSelectedDate(date); setTimeSlot('') }}
+              filterDate={(date) => !isDateClosed(date)}
+              dayClassName={getDayClassName}
+              dateFormat="dd/MM/yyyy"
+              locale="fr"
+              minDate={today}
+              placeholderText="Sélectionner une date"
+              className="res-datepicker-input font-secondary"
+              wrapperClassName="res-datepicker-wrapper"
+              autoComplete="off"
             />
           </div>
 
@@ -212,10 +236,26 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
                 className="font-secondary"
                 style={{ ...inputStyle, backgroundColor: 'var(--surface-alt)', color: 'var(--muted)', cursor: 'not-allowed' }}
               >
-                <option>{date ? (isDateDisabled(date) ? 'Non disponible' : 'Aucun créneau') : 'Choisir une date'}</option>
+                <option>
+                  {selectedDate
+                    ? (isDateClosed(selectedDate) ? 'Non disponible' : 'Aucun créneau')
+                    : 'Choisir une date'}
+                </option>
               </select>
             )}
           </div>
+        </div>
+
+        {/* Légende */}
+        <div style={{ display: 'flex', gap: 16, marginTop: 4 }}>
+          <span className="font-secondary" style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.72rem', color: 'var(--muted)' }}>
+            <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 3, backgroundColor: '#fee2e2', border: '1px solid #dc2626' }} />
+            Fermé
+          </span>
+          <span className="font-secondary" style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.72rem', color: 'var(--muted)' }}>
+            <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 3, backgroundColor: 'var(--pine)' }} />
+            Sélectionné
+          </span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

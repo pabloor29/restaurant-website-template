@@ -8,10 +8,11 @@ export const metadata: Metadata = { title: 'Réserver' }
 export default async function ReservationPage() {
   const supabase = await createClient()
 
-  const [{ data: schedule }, { data: closedDays }, { data: hours }] = await Promise.all([
+  const [{ data: schedule }, { data: closedDays }, { data: hours }, { data: holidays }] = await Promise.all([
     supabase.from('reservation_schedule').select('*').eq('restaurant_id', RESTAURANT_ID).single(),
     supabase.from('closed_days').select('days').eq('restaurant_id', RESTAURANT_ID).single(),
     supabase.from('opening_hours').select('hours').eq('restaurant_id', RESTAURANT_ID).single(),
+    supabase.from('holidays').select('periods').eq('restaurant_id', RESTAURANT_ID).single(),
   ])
 
   return (
@@ -31,6 +32,7 @@ export default async function ReservationPage() {
         schedule={schedule}
         closedDays={closedDays?.days ?? []}
         openingHours={hours?.hours ?? null}
+        holidayPeriods={holidays?.periods ?? []}
       />
     </div>
   )

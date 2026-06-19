@@ -68,6 +68,7 @@ export function Footer({
             ['/menus', 'Menus'],
             ['/formules', 'Formules'],
             ['/evenements', 'Événements'],
+            ['/contact', 'Contact'],
             ['/reservation', 'Réserver une table'],
           ].map(([href, label]) => (
             <Link key={href} href={href} className="font-secondary" style={{
@@ -114,9 +115,15 @@ export function Footer({
       </div>
 
       {/* Bottom bar */}
-      <div style={{ borderTop: '1px solid rgba(245,241,233,0.1)', padding: '16px 24px', maxWidth: 1100, margin: '0 auto' }}>
-        <p className="font-secondary" style={{ fontSize: '0.75rem', color: 'rgba(245,241,233,0.3)', textAlign: 'center' }}>
+      <div style={{ borderTop: '1px solid rgba(245,241,233,0.1)', padding: '16px 24px', maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <p className="font-secondary" style={{ fontSize: '0.75rem', color: 'rgba(245,241,233,0.3)' }}>
           © {new Date().getFullYear()} {restaurant?.name}
+        </p>
+        <p className="font-secondary" style={{ fontSize: '0.75rem', color: 'rgba(245,241,233,0.3)' }}>
+          Site réalisé par{' '}
+          <a href="https://resa-service.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(245,241,233,0.5)', textDecoration: 'none', fontWeight: 600 }}>
+            RESA
+          </a>
         </p>
       </div>
     </footer>

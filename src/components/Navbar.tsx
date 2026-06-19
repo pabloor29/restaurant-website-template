@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { href: '/menus',       label: 'Menus' },
   { href: '/formules',    label: 'Formules' },
   { href: '/evenements',  label: 'Événements' },
-  { href: '/reservation', label: 'Réserver' },
+  { href: '/contact',     label: 'Contact' },
 ]
 
 export function Navbar({ restaurantName }: { restaurantName: string }) {
