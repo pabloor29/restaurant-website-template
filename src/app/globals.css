@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* ── Design tokens (brand-book RESA) — overridable per client ── */
+:root {
+  --pine:              #13503B;
+  --pine-dark:         #0C3528;
+  --pine-light:        #E7F0EB;
+  --amber:             #C77E3A;
+  --amber-light:       #F3E5D3;
+  --ink:               #16201B;
+  --slate:             #5E665E;
+  --muted:             #9A9587;
+  --border:            #E5DED0;
+  --border-soft:       #F0EADD;
+  --paper:             #F5F1E9;
+  --surface-alt:       #FCFAF5;
+  --surface:           #FFFFFF;
+  --status-ok-text:    #1E7A52;
+  --status-ok-bg:      #E4F1EA;
+  --status-warn-text:  #B97D2B;
+  --status-warn-bg:    #F6EBD6;
+  --status-err-text:   #A8473A;
+  --status-err-bg:     #F4E2DD;
+  --status-info-text:  #3A6B8F;
+  --status-info-bg:    #E3ECF2;
+
+  /* Fonts */
+  --font-primary:   'Schibsted Grotesk', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+  --font-accent:    'Newsreader', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography helpers ── */
+.font-primary   { font-family: var(--font-primary); }
+.font-secondary { font-family: var(--font-secondary); }
+.font-accent    { font-family: var(--font-accent); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
