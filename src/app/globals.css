@@ -54,6 +54,22 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
+/* ── reservation layout ── */
+.res-date-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.res-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 6px;
+}
+@media (max-width: 720px) {
+  .res-date-time-grid { grid-template-columns: 1fr; }
+  .res-slot-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+}
+
 /* ── react-datepicker ── */
 .res-datepicker-wrapper { width: 100%; }
 
