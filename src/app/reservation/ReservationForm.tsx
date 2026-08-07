@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { fr } from 'date-fns/locale'
 import type { ReservationSchedule, OpeningHourDay, HolidayPeriod } from '@/lib/restaurant'
@@ -160,6 +160,8 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [availSet, setAvailSet] = useState<Set<string> | null>(null)   // available times for date+covers
+  const [availLoading, setAvailLoading] = useState(false)
 
   const isDateClosed = (date: Date): boolean => {
     const iso = toISO(date)
@@ -184,7 +186,33 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
     return generateSlots(schedule, selectedDate.getDay(), openingHours)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, schedule, openingHours, closedDays])
-  const hasSlots = slots.midi.length > 0 || slots.soir.length > 0
+
+  // Ask the admin for the times still available for this date + party size.
+  useEffect(() => {
+    if (!selectedDate || isDateClosed(selectedDate)) { setAvailSet(null); return }
+    const coversN = Math.max(1, Number(covers) || 1)
+    const ac = new AbortController()
+    setAvailLoading(true)
+    fetch(`/api/availability?date=${toISO(selectedDate)}&covers=${coversN}`, { signal: ac.signal })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => setAvailSet(d ? new Set<string>(d.slots) : null))
+      .catch(() => { /* network/abort → fall back to schedule-only slots */ })
+      .finally(() => setAvailLoading(false))
+    return () => ac.abort()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, covers])
+
+  // Keep only the times the restaurant can actually seat (null = fallback: show all).
+  const shownSlots = useMemo<SlotGroups>(() => {
+    if (!availSet) return slots
+    return { midi: slots.midi.filter(s => availSet.has(s)), soir: slots.soir.filter(s => availSet.has(s)) }
+  }, [slots, availSet])
+  const hasSlots = shownSlots.midi.length > 0 || shownSlots.soir.length > 0
+
+  // Drop a chosen time that is no longer available after covers/date change.
+  useEffect(() => {
+    if (timeSlot && availSet && !availSet.has(timeSlot)) setTimeSlot('')
+  }, [availSet, timeSlot])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -305,22 +333,22 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
             </label>
             {hasSlots ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {slots.midi.length > 0 && (
+                {shownSlots.midi.length > 0 && (
                   <SlotGroup
                     title="Midi"
                     icon="☀"
                     accent="#f59e0b"
-                    slots={slots.midi}
+                    slots={shownSlots.midi}
                     selected={timeSlot}
                     onSelect={setTimeSlot}
                   />
                 )}
-                {slots.soir.length > 0 && (
+                {shownSlots.soir.length > 0 && (
                   <SlotGroup
                     title="Soir"
                     icon="☾"
                     accent="#4f46e5"
-                    slots={slots.soir}
+                    slots={shownSlots.soir}
                     selected={timeSlot}
                     onSelect={setTimeSlot}
                   />
@@ -331,9 +359,13 @@ export function ReservationForm({ restaurantId, schedule, closedDays, openingHou
                 className="font-secondary"
                 style={{ ...inputStyle, backgroundColor: 'var(--surface-alt)', color: 'var(--muted)', cursor: 'not-allowed', padding: '14px' }}
               >
-                {selectedDate
-                  ? (isDateClosed(selectedDate) ? 'Non disponible' : 'Aucun créneau')
-                  : 'Choisir une date'}
+                {!selectedDate
+                  ? 'Choisir une date'
+                  : isDateClosed(selectedDate)
+                    ? 'Non disponible'
+                    : availLoading
+                      ? 'Recherche des disponibilités…'
+                      : 'Plus de disponibilité pour ce nombre de couverts'}
               </div>
             )}
           </div>
