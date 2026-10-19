@@ -1,0 +1,166 @@
+{
+  "week": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+  "nav": {
+    "home": "Accueil",
+    "menus": "Menus",
+    "formules": "Formules",
+    "events": "Événements",
+    "about": "À propos",
+    "contact": "Contact",
+    "reservation": "Réservation",
+    "reserve": "Réserver",
+    "language": "Langue"
+  },
+  "hero": {
+    "subtitle": "Cuisine de saison · fait maison",
+    "menus": "Menu",
+    "formules": "Formules",
+    "events": "Événements",
+    "about": "Présentation",
+    "contact": "Contact",
+    "reservation": "Réservation"
+  },
+  "home": {
+    "welcome": "Bienvenue",
+    "reserveCta": "Réserver une table",
+    "viewMenus": "Voir le menu",
+    "introTitle": "Notre table",
+    "introBody": "Une cuisine généreuse et conviviale, préparée maison à partir de produits frais et de saison. Poussez la porte et laissez-vous porter le temps d'un repas.",
+    "introCta": "Notre carte",
+    "formulesTitle": "Nos formules",
+    "eventsTitle": "Prochains événements",
+    "hoursTitle": "Horaires d'ouverture",
+    "seeAll": "Voir tout"
+  },
+  "reviews": {
+    "title": "Avis clients",
+    "previous": "Avis précédent",
+    "next": "Avis suivant",
+    "goToReview": "Aller à l'avis {number}",
+    "ratingSuffix": "/ 5"
+  },
+  "contact": {
+    "findUs": "Venez nous rendre visite",
+    "hoursTitle": "Horaires",
+    "closed": "Fermé",
+    "unavailable": "Horaires non disponibles",
+    "addressTitle": "Adresse",
+    "contactTitle": "Contact",
+    "amenitiesTitle": "Informations pratiques",
+    "paymentTitle": "Modes de paiement",
+    "creditCard": "Carte de crédit",
+    "cash": "Espèces",
+    "petsAllowed": "Animaux acceptés",
+    "wifi": "Accès Internet Wifi",
+    "languagesTitle": "Langues parlées",
+    "langEnglish": "Anglais",
+    "langSpanish": "Espagnol",
+    "langItalian": "Italien",
+    "phonePrefix": "Tél",
+    "reserveCta": "Réserver une table"
+  },
+  "about": {
+    "title": "Qui sommes-nous",
+    "subtitle": "La maison et celles et ceux qui la font vivre",
+    "members": [
+      {
+        "title": "Notre histoire",
+        "body": "Une aventure née d'une idée simple : créer un lieu chaleureux où l'on partage de bons plats et de beaux moments. Chaque jour, nous mettons la même passion à vous accueillir."
+      },
+      {
+        "title": "En cuisine",
+        "body": "Derrière les fourneaux, une cuisine faite maison, inspirée des produits de saison et des recettes qui nous tiennent à cœur."
+      },
+      {
+        "title": "En salle",
+        "body": "Un accueil attentif et le sourire, pour vous conseiller et faire de votre repas un moment à part."
+      }
+    ]
+  },
+  "menus": {
+    "title": "Nos menus",
+    "subtitle": "Découvrez notre carte",
+    "soon": "Les menus seront bientôt disponibles.",
+    "emptyCategory": "Aucun fichier."
+  },
+  "formules": {
+    "title": "Formules de groupe",
+    "subtitle": "Pour vos repas en groupe, séminaires et événements privés",
+    "soon": "Nos formules seront bientôt disponibles.",
+    "reserveWith": "Réserver avec cette formule"
+  },
+  "events": {
+    "title": "Événements",
+    "subtitle": "Soirées thématiques, concerts et rendez-vous spéciaux",
+    "upcoming": "À venir",
+    "past": "Événements passés",
+    "none": "Aucun événement à venir pour le moment."
+  },
+  "footer": {
+    "hoursTitle": "Horaires",
+    "addressTitle": "Adresse",
+    "contactTitle": "Contact",
+    "navTitle": "Navigation",
+    "closed": "Fermé",
+    "unavailable": "Horaires non disponibles",
+    "legal": "Mentions légales",
+    "privacy": "Politique de confidentialité",
+    "cgu": "CGU",
+    "madeBy": "Site réalisé par"
+  },
+  "cookie": {
+    "text": "Ce site utilise une mesure d'audience anonyme et sans cookies (Vercel Analytics). Aucun cookie de traçage publicitaire n'est déposé.",
+    "learnMore": "En savoir plus",
+    "gotIt": "J'ai compris",
+    "close": "Fermer"
+  },
+  "formula": {
+    "title": "Formule du midi",
+    "button": "Formule du midi"
+  },
+  "reservation": {
+    "subtitle": "Votre demande sera confirmée par notre équipe",
+    "title": "Demande de réservation",
+    "fullNameLabel": "Nom complet",
+    "emailLabel": "Email",
+    "phoneLabel": "Téléphone",
+    "numberOfGuestsLabel": "Nombre de personnes",
+    "eventDateLabel": "Date",
+    "eventTimeLabel": "Heure",
+    "specialRequestsLabel": "Demandes spéciales",
+    "submitButton": "ENVOYER LA DEMANDE",
+    "submitting": "Envoi en cours...",
+    "afterSentMessage": "Merci pour votre demande de réservation ! Un email de confirmation vous sera envoyé sous peu. Veuillez vérifier votre boîte mail.",
+    "spamWarning": "Pensez à vérifier votre dossier courrier indésirable (spam) : notre email de confirmation peut parfois s'y glisser.",
+    "alertMaxNbGuests": "Pour toute réservation supérieure à {max} couverts, veuillez nous contacter à cette adresse mail : ",
+    "fillRequiredFields": "Veuillez remplir les champs obligatoires : nom, email, nombre de personnes, date et heure.",
+    "serviceLabel": "Service",
+    "serviceMidi": "midi",
+    "serviceSoir": "soir",
+    "callButton": "Appeler le restaurant",
+    "todaySameDayMessage": "Pour toute réservation le jour même, merci d'appeler le restaurant directement.",
+    "pickDateFirst": "Sélectionnez d'abord une date pour voir les créneaux disponibles.",
+    "noSlots": "Aucun créneau disponible",
+    "slotUnavailable": "Ce créneau vient d'être complet. Merci de choisir un autre horaire.",
+    "selectedLabel": "Sélectionné",
+    "closedLabel": "Fermé",
+    "datePlaceholder": "Sélectionner une date",
+    "newReservation": "Faire une nouvelle réservation",
+    "duplicateTitle": "Réservation déjà existante",
+    "duplicateIntro": "Une demande de réservation existe déjà pour cette adresse email le même jour, pour le service du {service}.",
+    "duplicateCheckMail": "Merci de bien vérifier votre boîte mail ainsi que vos courriers indésirables (spams).",
+    "duplicateNoMail": "Si vous n'avez reçu aucun email, veuillez appeler directement le restaurant :",
+    "duplicateCall": "Appeler le restaurant",
+    "duplicateClose": "Fermer"
+  },
+  "meta": {
+    "defaultDescription": "Bienvenue au {name}. Cuisine de saison faite maison. Réservez votre table en ligne.",
+    "homeDescription": "{name} — cuisine de saison faite maison. Découvrez notre carte, nos formules et réservez votre table en ligne.",
+    "menuDescription": "Découvrez la carte du {name} : plats faits maison et produits de saison.",
+    "formulesDescription": "Les formules de groupe du {name} pour vos repas en groupe, séminaires et événements privés.",
+    "eventsDescription": "Les prochains événements du {name} : soirées thématiques, concerts et rendez-vous spéciaux.",
+    "contactDescription": "Contactez le {name} : adresse, horaires et plan d'accès. Réservez votre table en ligne.",
+    "aboutDescription": "Découvrez {name}, la maison et l'équipe qui la font vivre.",
+    "reservationDescription": "Réservez votre table au {name}. Réservation en ligne rapide et simple."
+  }
+}

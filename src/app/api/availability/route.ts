@@ -8,6 +8,8 @@ import { RESTAURANT_ID } from '@/lib/restaurant'
 // by combining tables. A table stays busy for the per-service turn duration.
 //   GET /api/availability?date=YYYY-MM-DD&covers=N  ->  { date, covers, slots: [] }
 
+export const dynamic = 'force-dynamic'
+
 const ACTIVE_STATUSES = ['pending', 'accepted', 'arrived']
 
 const pad = (n: number) => String(n).padStart(2, '0')

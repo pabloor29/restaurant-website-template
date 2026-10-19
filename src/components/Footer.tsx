@@ -1,131 +1,118 @@
-import Link from 'next/link'
-import type { Restaurant } from '@/lib/restaurant'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/routing'
+import { getOpeningHours, DAYS_FR } from '@/lib/opening-hours'
+import { getRestaurantInfo } from '@/lib/restaurant-contact'
+import { SHOW_PHONE, telHref } from '@/lib/phone'
+import { siteConfig } from '@/config/site'
+import { CookieBanner } from './CookieBanner'
 
-const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-
-type HourDay = {
-  midi: { debut: string; fin: string }
-  soir: { debut: string; fin: string }
-  closedLunch: boolean
-  closedDiner: boolean
-  closedDay: boolean
+const labelStyle: React.CSSProperties = {
+  fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.12em',
+  color: 'rgba(245,241,233,0.4)', marginBottom: 14, textTransform: 'uppercase',
+}
+const linkStyle: React.CSSProperties = {
+  display: 'block', marginBottom: 8, fontSize: '0.875rem',
+  color: 'rgba(245,241,233,0.65)', textDecoration: 'none',
 }
 
-function fmtTime(t: string) {
-  if (!t) return null
-  const [h, m] = t.split(':')
-  return m === '00' ? `${h}h` : `${h}h${m}`
-}
+export async function Footer() {
+  const [t, tRoot, info, hours] = await Promise.all([
+    getTranslations('footer'),
+    getTranslations(),
+    getRestaurantInfo(),
+    getOpeningHours(),
+  ])
+  const week = tRoot.raw('week') as string[]
 
-export function Footer({
-  restaurant,
-  hours,
-}: {
-  restaurant: Restaurant | null
-  hours?: HourDay[]
-}) {
   return (
-    <footer style={{
-      background: 'var(--ink)', color: 'var(--paper)',
-      marginTop: 'auto',
-    }}>
-      <div style={{
-        maxWidth: 1100, margin: '0 auto',
-        padding: 'clamp(40px, 6vw, 72px) 24px clamp(24px, 4vw, 40px)',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 40,
-      }}>
-        {/* Brand */}
+    <footer style={{ background: 'var(--ink)', color: 'var(--paper)', marginTop: 'auto' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(40px, 6vw, 72px) 24px clamp(24px, 4vw, 40px)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 40 }}>
+        {/* Brand + address */}
         <div>
           <p className="font-primary" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: 12, letterSpacing: '-0.02em' }}>
-            {restaurant?.name}
+            {info.name}
           </p>
-          {restaurant?.address && (
+          {info.address && (
             <p className="font-secondary" style={{ fontSize: '0.875rem', color: 'rgba(245,241,233,0.6)', lineHeight: 1.7 }}>
-              {restaurant.address.split('\n').map((line, i) => (
+              {info.address.split('\n').map((line, i) => (
                 <span key={i}>{line}<br /></span>
               ))}
             </p>
           )}
-          {restaurant?.phone && (
-            <a href={`tel:${restaurant.phone.replace(/\s/g, '')}`} className="font-secondary" style={{
-              display: 'block', marginTop: 10, fontSize: '0.875rem',
-              color: 'rgba(245,241,233,0.7)', textDecoration: 'none',
-            }}>
-              {restaurant.phone}
-            </a>
-          )}
         </div>
 
-        {/* Navigation */}
+        {/* Contact */}
         <div>
-          <p className="font-secondary" style={{ fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(245,241,233,0.4)', marginBottom: 14 }}>
-            NAVIGATION
-          </p>
-          {[
-            ['/', 'Accueil'],
-            ['/menus', 'Menus'],
-            ['/formules', 'Formules'],
-            ['/evenements', 'Événements'],
-            ['/contact', 'Contact'],
-            ['/reservation', 'Réserver une table'],
-          ].map(([href, label]) => (
-            <Link key={href} href={href} className="font-secondary" style={{
-              display: 'block', marginBottom: 8, fontSize: '0.875rem',
-              color: 'rgba(245,241,233,0.65)', textDecoration: 'none',
-            }}>
-              {label}
-            </Link>
-          ))}
+          <p className="font-secondary" style={labelStyle}>{t('contactTitle')}</p>
+          <a href={`mailto:${info.email}`} className="font-secondary" style={linkStyle}>{info.email}</a>
+          {SHOW_PHONE && info.phone && (
+            <a href={telHref(info.phone)} className="font-secondary" style={linkStyle}>{info.phone}</a>
+          )}
+          <a href={siteConfig.instagram.url} target="_blank" rel="noreferrer" className="font-secondary" style={linkStyle}>
+            {siteConfig.instagram.handle}
+          </a>
         </div>
 
-        {/* Horaires */}
+        {/* Hours */}
         {hours && hours.length === 7 && (
           <div>
-            <p className="font-secondary" style={{ fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(245,241,233,0.4)', marginBottom: 14 }}>
-              HORAIRES
-            </p>
-            {DAYS.map((day, i) => {
+            <p className="font-secondary" style={labelStyle}>{t('hoursTitle')}</p>
+            {DAYS_FR.map((day, i) => {
               const h = hours[i]
-              if (h.closedDay) {
-                return (
-                  <div key={day} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                    <span className="font-secondary" style={{ fontSize: '0.8rem', color: 'rgba(245,241,233,0.5)' }}>{day}</span>
-                    <span className="font-secondary" style={{ fontSize: '0.8rem', color: 'rgba(245,241,233,0.3)' }}>Fermé</span>
-                  </div>
-                )
+              const parts: string[] = []
+              if (!h.closedDay) {
+                if (!h.closedLunch && h.midi?.debut && h.midi?.fin) parts.push(`${h.midi.debut} - ${h.midi.fin}`)
+                if (!h.closedDiner && h.soir?.debut && h.soir?.fin) parts.push(`${h.soir.debut} - ${h.soir.fin}`)
               }
-              const parts = []
-              if (!h.closedLunch && h.midi.debut && h.midi.fin)
-                parts.push(`${fmtTime(h.midi.debut)}–${fmtTime(h.midi.fin)}`)
-              if (!h.closedDiner && h.soir.debut && h.soir.fin)
-                parts.push(`${fmtTime(h.soir.debut)}–${fmtTime(h.soir.fin)}`)
               return (
                 <div key={day} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 5 }}>
-                  <span className="font-secondary" style={{ fontSize: '0.8rem', color: 'rgba(245,241,233,0.65)' }}>{day}</span>
+                  <span className="font-secondary" style={{ fontSize: '0.8rem', color: 'rgba(245,241,233,0.65)' }}>{week[i] ?? day}</span>
                   <span className="font-secondary" style={{ fontSize: '0.8rem', color: 'rgba(245,241,233,0.45)', textAlign: 'right' }}>
-                    {parts.length ? parts.join(' · ') : '–'}
+                    {h.closedDay ? t('closed') : parts.length ? parts.join(' · ') : '–'}
                   </span>
                 </div>
               )
             })}
           </div>
         )}
+
+        {/* Navigation */}
+        <div>
+          <p className="font-secondary" style={labelStyle}>{t('navTitle')}</p>
+          {([
+            ['/', 'home'],
+            ['/menus', 'menus'],
+            ['/formules', 'formules'],
+            ['/evenements', 'events'],
+            ['/apropos', 'about'],
+            ['/contact', 'contact'],
+            ['/reservation', 'reservation'],
+          ] as const).map(([href, key]) => (
+            <Link key={href} href={href} className="font-secondary" style={linkStyle}>
+              {tRoot(`nav.${key}`)}
+            </Link>
+          ))}
+        </div>
       </div>
 
-      {/* Bottom bar */}
-      <div style={{ borderTop: '1px solid rgba(245,241,233,0.1)', padding: '16px 24px', maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-        <p className="font-secondary" style={{ fontSize: '0.75rem', color: 'rgba(245,241,233,0.3)' }}>
-          © {new Date().getFullYear()} {restaurant?.name}
-        </p>
-        <p className="font-secondary" style={{ fontSize: '0.75rem', color: 'rgba(245,241,233,0.3)' }}>
-          Site réalisé par{' '}
-          <a href="https://resa-service.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(245,241,233,0.5)', textDecoration: 'none', fontWeight: 600 }}>
-            RESA
-          </a>
-        </p>
-      </div>
+      {/* Legal bar */}
+      <nav aria-label={t('legal')} style={{ borderTop: '1px solid rgba(245,241,233,0.1)', padding: '16px 24px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 16, fontSize: '0.75rem', color: 'rgba(245,241,233,0.5)' }}>
+          <Link href="/mentions-legales" className="font-secondary" style={{ color: 'rgba(245,241,233,0.55)', textDecoration: 'none' }}>{t('legal')}</Link>
+          <span aria-hidden>·</span>
+          <Link href="/politique-confidentialite" className="font-secondary" style={{ color: 'rgba(245,241,233,0.55)', textDecoration: 'none' }}>{t('privacy')}</Link>
+          <span aria-hidden>·</span>
+          <Link href="/cgu" className="font-secondary" style={{ color: 'rgba(245,241,233,0.55)', textDecoration: 'none' }}>{t('cgu')}</Link>
+          <span className="font-secondary" style={{ marginLeft: 'auto' }}>
+            © {new Date().getFullYear()} {info.name} · {t('madeBy')}{' '}
+            <a href={siteConfig.legal.developer.url} target="_blank" rel="noreferrer" style={{ color: 'rgba(245,241,233,0.7)', textDecoration: 'none', fontWeight: 600 }}>
+              {siteConfig.legal.developer.name}
+            </a>
+          </span>
+        </div>
+      </nav>
+
+      <CookieBanner />
     </footer>
   )
 }

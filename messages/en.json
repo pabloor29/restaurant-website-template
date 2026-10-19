@@ -1,0 +1,166 @@
+{
+  "week": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  "nav": {
+    "home": "Home",
+    "menus": "Menus",
+    "formules": "Set menus",
+    "events": "Events",
+    "about": "About",
+    "contact": "Contact",
+    "reservation": "Reservation",
+    "reserve": "Book",
+    "language": "Language"
+  },
+  "hero": {
+    "subtitle": "Seasonal cooking · homemade",
+    "menus": "Menu",
+    "formules": "Set menus",
+    "events": "Events",
+    "about": "About us",
+    "contact": "Contact",
+    "reservation": "Reservation"
+  },
+  "home": {
+    "welcome": "Welcome",
+    "reserveCta": "Book a table",
+    "viewMenus": "View the menu",
+    "introTitle": "Our table",
+    "introBody": "Generous, convivial cooking made in-house from fresh, seasonal produce. Step inside and let yourself be carried away for the length of a meal.",
+    "introCta": "Our menu",
+    "formulesTitle": "Our set menus",
+    "eventsTitle": "Upcoming events",
+    "hoursTitle": "Opening hours",
+    "seeAll": "See all"
+  },
+  "reviews": {
+    "title": "Customer reviews",
+    "previous": "Previous review",
+    "next": "Next review",
+    "goToReview": "Go to review {number}",
+    "ratingSuffix": "/ 5"
+  },
+  "contact": {
+    "findUs": "Come and visit us",
+    "hoursTitle": "Opening hours",
+    "closed": "Closed",
+    "unavailable": "Hours unavailable",
+    "addressTitle": "Address",
+    "contactTitle": "Contact",
+    "amenitiesTitle": "Good to know",
+    "paymentTitle": "Payment methods",
+    "creditCard": "Credit card",
+    "cash": "Cash",
+    "petsAllowed": "Pets allowed",
+    "wifi": "Free Wi-Fi",
+    "languagesTitle": "Languages spoken",
+    "langEnglish": "English",
+    "langSpanish": "Spanish",
+    "langItalian": "Italian",
+    "phonePrefix": "Tel",
+    "reserveCta": "Book a table"
+  },
+  "about": {
+    "title": "Who we are",
+    "subtitle": "The house and the people who bring it to life",
+    "members": [
+      {
+        "title": "Our story",
+        "body": "An adventure born from a simple idea: to create a warm place where good food and good moments are shared. Every day we welcome you with the same passion."
+      },
+      {
+        "title": "In the kitchen",
+        "body": "Behind the stove, homemade cooking inspired by seasonal produce and the recipes closest to our hearts."
+      },
+      {
+        "title": "In the dining room",
+        "body": "Attentive, smiling service to guide you and turn your meal into a special moment."
+      }
+    ]
+  },
+  "menus": {
+    "title": "Our menus",
+    "subtitle": "Discover our menu",
+    "soon": "Menus will be available soon.",
+    "emptyCategory": "No file."
+  },
+  "formules": {
+    "title": "Group set menus",
+    "subtitle": "For your group meals, seminars and private events",
+    "soon": "Our set menus will be available soon.",
+    "reserveWith": "Book with this set menu"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Themed evenings, concerts and special occasions",
+    "upcoming": "Upcoming",
+    "past": "Past events",
+    "none": "No upcoming events at the moment."
+  },
+  "footer": {
+    "hoursTitle": "Hours",
+    "addressTitle": "Address",
+    "contactTitle": "Contact",
+    "navTitle": "Navigation",
+    "closed": "Closed",
+    "unavailable": "Hours unavailable",
+    "legal": "Legal notice",
+    "privacy": "Privacy policy",
+    "cgu": "Terms of use",
+    "madeBy": "Website by"
+  },
+  "cookie": {
+    "text": "This site uses anonymous, cookie-free analytics (Vercel Analytics). No advertising tracking cookies are set.",
+    "learnMore": "Learn more",
+    "gotIt": "Got it",
+    "close": "Close"
+  },
+  "formula": {
+    "title": "Lunch set menu",
+    "button": "Lunch set menu"
+  },
+  "reservation": {
+    "subtitle": "Your request will be confirmed by our team",
+    "title": "Reservation request",
+    "fullNameLabel": "Full name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "numberOfGuestsLabel": "Number of people",
+    "eventDateLabel": "Date",
+    "eventTimeLabel": "Time",
+    "specialRequestsLabel": "Special requests",
+    "submitButton": "SEND REQUEST",
+    "submitting": "Sending...",
+    "afterSentMessage": "Thank you for your reservation request! A confirmation email will be sent to you shortly. Please check your inbox.",
+    "spamWarning": "Be sure to check your spam / junk folder — our confirmation email sometimes ends up there.",
+    "alertMaxNbGuests": "For reservations of more than {max} covers, please contact us at this email address: ",
+    "fillRequiredFields": "Please fill in the required fields: name, email, number of people, date and time.",
+    "serviceLabel": "Service",
+    "serviceMidi": "lunch",
+    "serviceSoir": "dinner",
+    "callButton": "Call the restaurant",
+    "todaySameDayMessage": "For same-day reservations, please call the restaurant directly.",
+    "pickDateFirst": "Select a date first to see available time slots.",
+    "noSlots": "No slots available",
+    "slotUnavailable": "This slot has just filled up. Please choose another time.",
+    "selectedLabel": "Selected",
+    "closedLabel": "Closed",
+    "datePlaceholder": "Select a date",
+    "newReservation": "Make another reservation",
+    "duplicateTitle": "Reservation already exists",
+    "duplicateIntro": "A reservation request already exists for this email on the same day, for the {service} service.",
+    "duplicateCheckMail": "Please check your inbox as well as your spam folder.",
+    "duplicateNoMail": "If you have not received any email, please call the restaurant directly:",
+    "duplicateCall": "Call the restaurant",
+    "duplicateClose": "Close"
+  },
+  "meta": {
+    "defaultDescription": "Welcome to {name}. Seasonal, homemade cooking. Book your table online.",
+    "homeDescription": "{name} — seasonal, homemade cooking. Discover our menu, our set menus and book your table online.",
+    "menuDescription": "Discover the menu at {name}: homemade dishes and seasonal produce.",
+    "formulesDescription": "Group set menus at {name} for your group meals, seminars and private events.",
+    "eventsDescription": "Upcoming events at {name}: themed evenings, concerts and special occasions.",
+    "contactDescription": "Contact {name}: address, opening hours and directions. Book your table online.",
+    "aboutDescription": "Meet {name}, the house and the team who bring it to life.",
+    "reservationDescription": "Book your table at {name}. Fast and simple online reservation."
+  }
+}
